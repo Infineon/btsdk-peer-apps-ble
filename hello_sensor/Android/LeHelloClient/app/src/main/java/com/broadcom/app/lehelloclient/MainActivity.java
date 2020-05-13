@@ -18,6 +18,7 @@
 package com.broadcom.app.lehelloclient;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import com.broadcom.app.ledevicepicker.DeviceListFragment.Callback;
 import com.broadcom.app.ledevicepicker.DevicePickerFragment;
 import com.broadcom.app.lehelloclient.GattUtils.RequestQueue;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -32,6 +34,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
@@ -46,6 +50,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v4.app.ActivityCompat;
 
 /**
  * Main activity for the the Hello Client application
@@ -306,6 +311,37 @@ public class MainActivity extends Activity implements OnClickListener, Callback,
         }
     }
 
+    private static final int PERM_REQUEST_CODE      = 11;
+
+    private boolean requestPermissions() {
+        ArrayList<String> permissionList = new ArrayList<String>();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(Manifest.permission.BLUETOOTH);
+            }
+            if (checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(Manifest.permission.BLUETOOTH_ADMIN);
+            }
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            }
+        }
+
+        if (permissionList.size() > 0) {
+            Log.d(TAG, "requestPermissions: permissionList size = " + permissionList.size());
+
+            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
+            Log.d(TAG, "requestPermissions: permissions length = " + permissions.length);
+            for (int i = 0; i < permissions.length; i++) {
+                Log.d(TAG, "requestPermissions: permissions[" + i + "] = " + permissions[i]);
+            }
+
+            ActivityCompat.requestPermissions(this, permissions, PERM_REQUEST_CODE);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -375,6 +411,8 @@ public class MainActivity extends Activity implements OnClickListener, Callback,
 
         // refresh the UI component states
         updateWidgets();
+
+        requestPermissions();
     }
 
     /**
