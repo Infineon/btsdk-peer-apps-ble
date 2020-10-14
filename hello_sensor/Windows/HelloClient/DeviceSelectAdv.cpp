@@ -34,6 +34,7 @@
 //
 
 #include "stdafx.h"
+#define _HAS_STD_BYTE 0
 #include "Resource.h"
 #include "DeviceSelectAdv.h"
 #include "afxdialogex.h"
@@ -92,8 +93,9 @@ HRESULT CDeviceSelectAdv::OnAdvertisementReceived(IBluetoothLEAdvertisementWatch
     {
         BD_ADDR bda;
         char buff[256] = { 0 };
-        int iIndex = 0;
         bool add_device = false;
+        bool bHelloDevice = false;
+        int iIndex = 0;
 
         BthAddrToBDA(bda, &address);
         ods("OnAdvertisementReceived address: %lld", address);
@@ -105,7 +107,6 @@ HRESULT CDeviceSelectAdv::OnAdvertisementReceived(IBluetoothLEAdvertisementWatch
 
         BthAddrToBDA(bda, &address);
         swprintf_s(buf, sizeof(buf) / sizeof(buf[0]), L"%02x:%02x:%02x:%02x:%02x:%02x", bda[0], bda[1], bda[2], bda[3], bda[4], bda[5]);
-
 
         WCHAR   buf2[64] = { 0 };
         int     i;
@@ -147,13 +148,23 @@ HRESULT CDeviceSelectAdv::OnAdvertisementReceived(IBluetoothLEAdvertisementWatch
             if (wcslen(name.GetRawBuffer(nullptr)) != 0)
                 sprintf_s(buff_name, sizeof(buff_name), " : name (%S)", name.GetRawBuffer(nullptr));
 
+            CString strName = name.GetRawBuffer(nullptr);
+            if (strName.CompareNoCase(L"hello") == 0)
+                bHelloDevice = true;
+
             ods("Local Name: %s", buff_name);
 
             MultiByteToWideChar(CP_UTF8, 0, (const char *)buff_name, (int)strlen(buff_name), wbuf_name, (int)sizeof(wbuf_name) / sizeof(WCHAR));
             wcscpy_s(wbuf_txt, buf);
             wcscat_s(wbuf_txt, wbuf_name);
-            if(add_device)
-                iIndex = m_lbDevices.AddString(wbuf_txt);
+
+            if (add_device)
+            {
+                if (!bHelloDevice)
+                    iIndex = m_lbDevices.AddString(wbuf_txt);
+                else
+                    iIndex = m_lbDevices.InsertString(0, wbuf_txt);
+            }
 
             // Get Services
             ComPtr<ABI::Windows::Foundation::Collections::IVector<GUID>> vecGuid;

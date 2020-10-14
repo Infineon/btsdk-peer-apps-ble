@@ -30,13 +30,15 @@
  * of such system or application assumes all risk of such use and in doing
  * so agrees to indemnify Cypress against all liability.
  */
+
+
 #include "stdafx.h"
 #include <setupapi.h>
 #include "HelloClient.h"
 #include "HelloClientDlg.h"
 #include "afxdialogex.h"
 #include <vector>
-#include "..\..\..\..\include\wiced_bt_firmware_upgrade.h"
+
 
 #define ASSERT_SUCCEEDED(hr) {if(FAILED(hr)) return (hr == S_OK);}
 #define RETURN_IF_FAILED(p, q) { FAILED(hr) ? { cout << p;} : q;}
