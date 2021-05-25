@@ -373,25 +373,9 @@ BOOL CHelloClientApp::InitInstance()
         guidCharHelloConfig     = UUID_HELLO_CHARACTERISTIC_CONFIG;
         guidCharHelloNotify     = UUID_HELLO_CHARACTERISTIC_NOTIFY;
 	}
-	else if (IsOSWin7())
+    else
 	{
-		dlg.m_bWin8 = FALSE;
-
-        TCHAR BtDevFullPath[MAX_PATH+1] = { '\0' };
-        CBTFullLibPath LibPath;
-        LibPath.GetFullInstallPathOf(L"BTWLeApi.Dll", BtDevFullPath, MAX_PATH);
-        if ((hLib = LoadLibrary(BtDevFullPath)) == NULL)
-		{
-			MessageBox(NULL, L"Broadcom Bluetooth profile pack for Windows (BTW) has to be installed", L"Error", MB_OK);
-			return FALSE;
-		}
-        BtwGuidFromGuid(&guidSvcHello, &UUID_HELLO_SERVICE);
-        BtwGuidFromGuid(&guidCharHelloConfig, &UUID_HELLO_CHARACTERISTIC_CONFIG);
-        BtwGuidFromGuid(&guidCharHelloNotify, &UUID_HELLO_CHARACTERISTIC_NOTIFY);
-	}
-	else
-	{
-		MessageBox(NULL, L"This application can run on Windows 10, Windows 8 or on Windows 7 with Broadcom Bluetooth profile pack for Windows (BTW) installed", L"Error", MB_OK);
+		MessageBox(NULL, L"This application can run on Windows 10, Windows 8", L"Error", MB_OK);
 		return FALSE;
 	}
 
@@ -409,6 +393,13 @@ BOOL CHelloClientApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	SetRegistryKey(_T("Cypress"));
 
+    CCommandLineInfo cmdInfo;
+    ParseCommandLine(cmdInfo);
+
+    char strPeerName[MAX_PATH];
+    strcpy(strPeerName, "");
+    WideCharToMultiByte(CP_ACP, 0, cmdInfo.m_strFileName, -1, strPeerName, sizeof(strPeerName), NULL, 0);
+
     CDeviceSelect dlgDeviceSelect;
     CDeviceSelectAdv dlgDeviceSelectAdv;
 
@@ -418,12 +409,14 @@ BOOL CHelloClientApp::InitInstance()
     {
         dlgDeviceSelectAdv.m_bWin8 = dlg.m_bWin8;
         dlgDeviceSelectAdv.m_bth.ullLong = 0;
+        dlgDeviceSelectAdv.m_strPeerName = cmdInfo.m_strFileName;
         nResponse = dlgDeviceSelectAdv.DoModal();
     }
     else
     {
         dlgDeviceSelect.m_bWin8 = dlg.m_bWin8;
         dlgDeviceSelect.m_bth.ullLong = 0;
+        dlgDeviceSelect.m_strPeerName = cmdInfo.m_strFileName;
         nResponse = dlgDeviceSelect.DoModal();
     }
 
@@ -468,7 +461,7 @@ BOOL CHelloClientApp::InitInstance()
 }
 
 
-void ods(char * fmt_str, ...)
+void ods(const char * fmt_str, ...)
 {
 	char buf[1000] = {0};
 	va_list marker = NULL;

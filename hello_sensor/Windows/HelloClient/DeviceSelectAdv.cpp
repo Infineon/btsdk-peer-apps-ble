@@ -45,7 +45,7 @@
 #pragma comment(lib, "RuntimeObject.lib")
 
 extern void UuidToString(LPWSTR buffer, size_t buffer_size, GUID *uuid);
-extern void ods(char * fmt_str, ...);
+extern void ods(const char * fmt_str, ...);
 
 
 EventRegistrationToken *watcherToken;
@@ -148,9 +148,17 @@ HRESULT CDeviceSelectAdv::OnAdvertisementReceived(IBluetoothLEAdvertisementWatch
             if (wcslen(name.GetRawBuffer(nullptr)) != 0)
                 sprintf_s(buff_name, sizeof(buff_name), " : name (%S)", name.GetRawBuffer(nullptr));
 
+            // For testing purpose, if the name is known name, put the device as first in the list
             CString strName = name.GetRawBuffer(nullptr);
             if (strName.CompareNoCase(L"hello") == 0)
                 bHelloDevice = true;
+
+            if (strName.CompareNoCase(L"hellosvt") == 0)
+                bHelloDevice = true;
+
+            if (!m_strPeerName.IsEmpty() && strName.CompareNoCase(m_strPeerName) == 0)
+                bHelloDevice = true;
+
 
             ods("Local Name: %s", buff_name);
 

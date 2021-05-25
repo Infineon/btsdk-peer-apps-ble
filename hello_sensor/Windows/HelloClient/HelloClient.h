@@ -99,7 +99,7 @@ static const GUID UUID_HELLO_CHARACTERISTIC_CONFIG = { 0x5e9bf2a8, 0xf93f, 0x448
 // {8AC32D3F-5CB9-4D44-BEC2-EE689169F626}
 static const GUID UUID_HELLO_CHARACTERISTIC_NOTIFY = { 0x8ac32d3f, 0x5cb9, 0x4d44, { 0xbe, 0xc2, 0xee, 0x68, 0x91, 0x69, 0xf6, 0x26 } };
 
-extern void ods(char * fmt_str, ...);
+extern void ods(const char * fmt_str, ...);
 extern void BdaToString (PWCHAR buffer, BLUETOOTH_ADDRESS *btha);
 extern void UuidToString(LPWSTR buffer, size_t buffer_size, GUID *uuid);
 

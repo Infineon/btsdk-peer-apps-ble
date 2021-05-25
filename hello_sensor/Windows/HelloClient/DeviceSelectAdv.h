@@ -116,6 +116,7 @@ public:
     int StartwatchLEAdvertisementWatcher();
 
     BOOL m_bStop;
+    CString m_strPeerName;
 
 
 

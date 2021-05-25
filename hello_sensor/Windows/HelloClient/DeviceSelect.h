@@ -50,6 +50,7 @@ public:
 
     BLUETOOTH_ADDRESS m_bth;
     BOOL m_bWin8;
+    CString m_strPeerName;
 
 private:
     int m_numDevices;

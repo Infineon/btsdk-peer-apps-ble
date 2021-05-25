@@ -115,7 +115,7 @@ BOOL CDeviceSelect::OnInitDialog()
             guid.Data4[7] = (UUID_HELLO_SERVICE.Data1 >> 24) & 0xff;
         }
         UuidToString(szService, 80, &guid);
-        ods ("%S\n", szService);
+        //ods ("%S\n", szService);
         for (DWORD n = 0; SetupDiEnumDeviceInfo(hardwareDeviceInfo, n, &DeviceInfoData); n++)
         {
             DWORD dwBytes = 0;
