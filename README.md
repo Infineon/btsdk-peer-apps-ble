@@ -2,9 +2,6 @@
 
 ### Overview
 
-This directory contains peer apps for Bluetooth Low Energy (LE) apps. App included are:
+This directory contains the HelloClient peer app for use with Bluetooth&#174; Low Energy (LE) embedded apps, specifically the Hello Sensor embedded LE BTSDK app. Together they demonstrate LE Vendor Specific Device communication. Binaries and source code are included.
 
-* hello_sensor<br/>
-    * Peer app for use with the hello_sensor embedded LE app. Supported OS - Android and Windows<br/>
-
-
+Supported OS: Android and Windows<br/>
